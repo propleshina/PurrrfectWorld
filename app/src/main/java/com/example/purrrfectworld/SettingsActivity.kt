@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.SeekBar
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.slider.Slider
 
 class SettingsActivity : AppCompatActivity() {

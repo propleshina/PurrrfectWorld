@@ -1,45 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- Заголовок -->
+    <!-- Верхняя часть: заголовок -->
     <TextView
         android:id="@+id/title"
         android:text="Настройки"
         android:textSize="24sp"
-        style="?attr/textAppearanceHeadline6" />
+        style="?attr/textAppearanceHeadline6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:padding="16dp"/>
 
-    <!-- Кнопка НАЗАД -->
+    <!-- Центральная часть с бегунками -->
+    <LinearLayout
+        android:id="@+id/center_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingHorizontal="16dp">
+
+        <!-- Громкость -->
+        <TextView
+            android:text="Громкость звука"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <SeekBar
+            android:id="@+id/volume_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Расстояние между настройками -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp"/>
+
+        <!-- Скорость перемотки текста -->
+        <TextView
+            android:text='Скорость перемотки текста'
+            android:textSize='16sp'
+            android:layout_width='match_parent'
+            android:layout_height='wrap_content'/>
+        <SeekBar
+            android:id="@+id/scroll_speed_seekbar"
+            android:layout_width='match_parent'
+            android:layout_height='wrap_content'/>
+
+        <!-- Расстояние между настройками -->
+        <Space
+            android:layout_width='match_parent'
+            android:layout_height='16dp'/>
+
+        <!-- Размер текста -->
+        <TextView
+            android:text='Размер текста'
+            android:textSize='16sp'
+            android:layout_width='match_parent'
+            android:layout_height='wrap_content'/>
+        <SeekBar
+            android:id="@+id/font_size_seekbar"
+            android:layout_width='match_parent'
+            android:layout_height='wrap_content'/>
+    </LinearLayout>
+
+    <!-- Нижняя часть с кнопкой "НАЗАД" -->
     <Button
         android:id="@+id/button_back"
         android:text="НАЗАД"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-         android:layout_height="10mm"
-         android:layout_width="20mm"/>
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
-    <!-- Настройки -->
-
-    <LinearLayout
-        android:id="@+id/settings_layout"
-        android:orientation="vertical"
-        android:layout_below="@id/title"
-        android:layout_marginTop="24dp"  android:layout_height="10mm" android:layout_width="20mm">
-
-        <!-- Громкость -->
-        <TextView android:text='Громкость звука'  android:layout_width="20mm" android:layout_height="10mm"/>
-        <SeekBar android:id="@+id/volume_seekbar" android:layout_height="20mm" android:layout_width="10mm"/>
-
-        <!-- Скорость текста -->
-        <TextView android:text='Скорость перемотки текста' android:layout_height="10mm" android:layout_width="20mm" />
-        <SeekBar android:id="@+id/scroll_speed_seekbar" android:layout_height="10mm" android:layout_width="20mm"/>
-
-        <!-- Размер текста -->
-        <TextView android:text='Размер текста' android:layout_height="10mm" android:layout_width="20mm"/>
-        <SeekBar android:id="@+id/font_size_seekbar" android:layout_height="10mm" android:layout_width="20mm"/>
-
-    </LinearLayout>
 </RelativeLayout>

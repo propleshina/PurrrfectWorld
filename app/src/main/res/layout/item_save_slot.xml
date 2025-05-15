@@ -14,16 +14,22 @@
         android:layout_height="match_parent">
 
         <TextView
-            id="@+id/save_title"
+            android:id="@+id/save_title"
             style="?attr/textAppearanceHeadline6"
-            android:textColor="@android:color/white"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white" />
 
         <Space
-            android:layout_weight="1" android:layout_height="2mm" android:layout_width="2mm"/>
+            android:layout_width="2mm"
+            android:layout_height="2mm"
+            android:layout_weight="1" />
 
         <TextView
-            id="@+id/save_date"
-            style="?attr/textAppearanceCaption"/>
+            android:id="@+id/save_date"
+            style="?attr/textAppearanceCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

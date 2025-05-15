@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
@@ -20,7 +21,7 @@ class SavesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saves)
 
-        val container = findViewById<LinearLayout>(R.id.slots_container)
+        val container = findViewById<GridLayout>(R.id.slots_container)
         val btnBack = findViewById<Button>(R.id.button_back)
 
         btnBack.setOnClickListener {

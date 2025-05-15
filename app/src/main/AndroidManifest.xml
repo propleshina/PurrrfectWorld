@@ -23,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SavesActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".GameActivity" />
     </application>
 
 </manifest>
