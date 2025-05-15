@@ -1,6 +1,7 @@
 package com.example.purrrfectworld;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,10 +46,14 @@ public class GameActivity extends AppCompatActivity {
     private String[] dialogLines; // строки из dialog.txt
     private int currentLineIndex = 0;
 
+    private static final String PREFS_NAME = "GameSavePrefs";
+    private static final String KEY_CURRENT_INDEX = "currentIndex";
+    private static final String KEY_CURRENT_BACKGROUND = "currentBackground";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game); // убедитесь, что layout содержит все нужные элементы
+        setContentView(R.layout.activity_game);// убедитесь, что layout содержит все нужные элементы
 
         // Инициализация UI элементов (для первой части)
         backgroundImageView = findViewById(R.id.backgroundImage);
@@ -59,6 +64,10 @@ public class GameActivity extends AppCompatActivity {
         // Инициализация UI элементов (для второй части)
         storyTextView = findViewById(R.id.storyTextView);
         autoPlayButton = findViewById(R.id.autoPlayButton);
+
+
+        loadDialogFromFile();
+        loadProgress();
 
         // Обработка кнопки возврата домой (если есть)
         ImageButton homeButton = findViewById(R.id.homeButton);
@@ -192,37 +201,35 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void parseAndDisplayLine(String line) {
-        // Разделяем по запятым
-        String[] parts = line.split(";", -1); // -1 чтобы сохранить пустые части
+        String[] parts = line.split(";", -1);
 
-        if (parts.length < 4) {
-            // Если структура неправильная, пропускаем
-            return;
-        }
+        if (parts.length < 4) return;
 
-// внутри parseAndDisplayLine()
         String backgroundFile = parts[0].trim();
-        Log.d("GameActivity", "Обработка фона: " + backgroundFile);
+
+        // Обновляем фон и сохраняем его имя
         if (!backgroundFile.equals("-") && !backgroundFile.isEmpty()) {
             int resId = getResources().getIdentifier(
                     backgroundFile.replace(".png", ""), "drawable", getPackageName());
             if (resId != 0) {
                 backgroundImageView.setImageResource(resId);
-            } else {
-                Log.w("GameActivity", "Ресурс фона не найден: " + backgroundFile);
+                currentBackground = backgroundFile; // сохраняем текущий фон
             }
+        } else {
+            currentBackground = "";
         }
+
         String dialoguePart = parts[1].trim();
         String iconFile = parts[2].trim();
         String characterNamePart = parts[3].trim();
 
-        // Обновляем фон
-        if (!backgroundFile.equals("-") && !backgroundFile.isEmpty()) {
-            int resId = getResources().getIdentifier(
-                    backgroundFile.replace(".png", ""), "drawable", getPackageName());
-            if (resId != 0) {
-                backgroundImageView.setImageResource(resId);
-            }
+        // Обновляем имя персонажа
+        if (!characterNamePart.equals("-") && !characterNamePart.isEmpty()) {
+            String characterNameStr = characterNamePart.replaceAll("[()]", "").trim();
+            characterName.setText(characterNameStr);
+            characterName.setVisibility(View.VISIBLE);
+        } else {
+            characterName.setVisibility(View.INVISIBLE);
         }
 
         // Обновляем иконку персонажа
@@ -233,29 +240,44 @@ public class GameActivity extends AppCompatActivity {
                 characterIcon.setImageResource(resIdIcon);
             }
         } else {
-            // Если нет картинки, можно скрыть или оставить как есть
-            characterIcon.setImageResource(0); // или сделать invisible
-        }
-
-        // Обновляем имя персонажа
-        String characterNameStr = "";
-        if (!characterNamePart.equals("-") && !characterNamePart.isEmpty()) {
-            // Удаляем скобки, если есть
-            characterNameStr = characterNamePart.replaceAll("[()]", "").trim();
-            characterName.setText(characterNameStr);
-            characterName.setVisibility(View.VISIBLE);
-        } else {
-            characterName.setVisibility(View.INVISIBLE);
+            characterIcon.setImageResource(0);
         }
 
         // Обрабатываем диалог
         String dialogueTextStr = "";
         if (!dialoguePart.equals("-") && !dialoguePart.isEmpty()) {
-            // Удаляем скобки, если есть
             dialogueTextStr = dialoguePart.replaceAll("[()]", "").trim();
             showDialogText(dialogueTextStr, null);
         } else {
             showDialogText("", null);
         }
     }
-}
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveProgress();}
+
+        private void saveProgress () {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(KEY_CURRENT_INDEX, currentLineIndex);
+            editor.putString(KEY_CURRENT_BACKGROUND, currentBackground);
+            editor.apply();
+        }
+        private void loadProgress () {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            currentLineIndex = prefs.getInt(KEY_CURRENT_INDEX, 0);
+            currentBackground = prefs.getString(KEY_CURRENT_BACKGROUND, "");
+
+            // Восстановить фон
+            if (!currentBackground.isEmpty()) {
+                int resId = getResources().getIdentifier(
+                        currentBackground.replace(".png", ""), "drawable", getPackageName());
+                if (resId != 0) {
+                    backgroundImageView.setImageResource(resId);
+                }
+            }
+            showNextLine();
+        }
+    }

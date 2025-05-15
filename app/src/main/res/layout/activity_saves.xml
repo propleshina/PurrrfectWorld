@@ -6,16 +6,14 @@
     android:background="@drawable/menu">
 
     <!-- Заголовок -->
-
-    <!-- Кнопка "НАЗАД" -->
-
     <TextView
         android:id="@+id/title"
-        android:layout_width="201dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" Сохранения"
+        android:text="Сохранения"
         android:textSize="30sp"
         android:textStyle="bold" />
+
 
     <Button
         android:id="@+id/button_back"
@@ -23,19 +21,19 @@
         android:layout_height="wrap_content"
         android:text="НАЗАД"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true" />
 
-    <!-- Контейнер для слотов -->
+
     <GridLayout
         android:id="@+id/slots_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:columnCount="3"
         android:rowCount="3"
-        android:layout_margin="4dp"
         android:layout_marginTop="16dp">
 
-
     </GridLayout>
+
 </RelativeLayout>

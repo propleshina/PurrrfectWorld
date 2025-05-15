@@ -2,11 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/menu"> >
+    android:background="@drawable/menu">
 
-    <!-- Верхняя часть: заголовок -->
-
-    <!-- Центральная часть с бегунками -->
     <TextView
         android:id="@+id/title"
         style="?attr/textAppearanceHeadline6"
@@ -27,7 +24,6 @@
         android:layout_centerInParent="true"
         android:paddingHorizontal="16dp">
 
-        <!-- Громкость -->
         <TextView
             android:text="Громкость звука"
             android:textSize="20sp"
@@ -38,12 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Расстояние между настройками -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="16dp"/>
 
-        <!-- Скорость перемотки текста -->
         <TextView
             android:text='Скорость перемотки текста'
             android:textSize='20sp'
@@ -54,12 +48,10 @@
             android:layout_width='match_parent'
             android:layout_height='wrap_content'/>
 
-        <!-- Расстояние между настройками -->
         <Space
             android:layout_width='match_parent'
             android:layout_height='16dp'/>
 
-        <!-- Размер текста -->
         <TextView
             android:text='Размер текста'
             android:textSize='20sp'
@@ -71,7 +63,6 @@
             android:layout_height='wrap_content'/>
     </LinearLayout>
 
-    <!-- Нижняя часть с кнопкой "НАЗАД" -->
     <Button
         android:id="@+id/button_back"
         android:text="НАЗАД"

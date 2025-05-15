@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/save_card"
-    android:layout_width="0dp"
-    android:layout_height="120dp"
-    app:cardCornerRadius="8dp"
-    app:rippleColor="@color/ripple_material_light">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="180dp"
+    android:gravity="center">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<ImageView
+android:id="@+id/slot_image"
+android:layout_width="80dp"
+android:layout_height="80dp"
+android:src="@drawable/black" />
 
-        <TextView
-            android:id="@+id/save_title"
-            style="?attr/textAppearanceHeadline6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white" />
+<TextView
+android:id="@+id/title"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Свободный слот"
+android:textSize="14sp"
+android:layout_marginTop="8dp" />
 
-        <Space
-            android:layout_width="2mm"
-            android:layout_height="2mm"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/save_date"
-            style="?attr/textAppearanceCaption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>
