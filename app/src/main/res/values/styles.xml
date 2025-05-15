@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+        <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        </style>
+
+    <style name="CustomButton" parent="Widget.AppCompat.Button">
+        <!-- Цвет фона -->
+        <item name="android:background">@drawable/button_background</item>
+        <!-- Цвет текста -->
+        <item name="android:textColor">@color/white</item>
+        <!-- Размер текста -->
+        <item name="android:textSize">16sp</item>
+        <!-- Отступы внутри кнопки -->
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <!-- Скругление углов через drawable -->
+    </style>
+</resources>
