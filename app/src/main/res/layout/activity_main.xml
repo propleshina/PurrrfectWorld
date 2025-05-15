@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="match_parent">
 
     <!-- Фон -->
     <ImageView
@@ -20,8 +19,9 @@
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="16dp"
-        android:background="@drawable/question" />
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="TODO"
+        android:src="@drawable/question" />
 
     <!-- Три центральные кнопки А, Б, В -->
     <LinearLayout
@@ -29,27 +29,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal">
 
-        <Button
+        <!-- Кнопка "Играть" с картинкой -->
+        <ImageButton
             android:id="@+id/button_play"
-            android:text="ИГРАТЬ"
-            style="@style/CustomButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="400dp"
+            android:layout_height="170dp"
+            android:contentDescription="TODO"
+            android:src="@drawable/play"
+        android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"/>
 
-        <Button
+        <!-- Кнопка "Сохранения" с картинкой -->
+        <ImageButton
             android:id="@+id/button_saves"
-            android:text="СОХРАНЕНИЯ"
-            style="@style/CustomButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="400dp"
+            android:layout_height="130dp"
+            android:contentDescription="TODO"
+            android:src="@drawable/save"
+        android:background="?attr/selectableItemBackgroundBorderless"
 
-        <Button
+            android:scaleType="fitCenter"/>
+
+        <!-- Кнопка "Настройки" с картинкой -->
+        <ImageButton
             android:id="@+id/button_settings"
-            android:text="НАСТРОЙКИ"
-            style="@style/CustomButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="400dp"
+            android:layout_height="130dp"
+            android:contentDescription="TODO"
+            android:src="@drawable/settings"
+        android:background="?attr/selectableItemBackgroundBorderless"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"/>
     </LinearLayout>
 </RelativeLayout>

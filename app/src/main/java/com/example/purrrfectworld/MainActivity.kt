@@ -1,31 +1,29 @@
 package com.example.purrrfectworld
 
-import com.example.purrrfectworld.R
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnInfo: ImageButton
-    private lateinit var btnPlay: Button
-    private lateinit var btnSaves: Button
-    private lateinit var btnSettings: Button
+    private lateinit var btnPlay: ImageButton
+    private lateinit var btnSaves: ImageButton
+    private lateinit var btnSettings: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Инициализация кнопок
+        // Инициализация кнопок по ID из layout
         btnInfo = findViewById(R.id.button_info)
         btnPlay = findViewById(R.id.button_play)
         btnSaves = findViewById(R.id.button_saves)
         btnSettings = findViewById(R.id.button_settings)
 
-        // Обработчики кнопок
+        // Назначение обработчиков
         btnInfo.setOnClickListener { showInfoDialog() }
         btnPlay.setOnClickListener { openGameWindow() }
         btnSaves.setOnClickListener { openSavesWindow() }
@@ -33,26 +31,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInfoDialog() {
-        // Создаем новый диалог
         val dialogBuilder = AlertDialog.Builder(this)
-
-        // Устанавливаем разметку из XML
         val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.dialog_info, null) // Замените dialog_info на имя вашего XML-файла
+        val dialogView = inflater.inflate(R.layout.dialog_info, null) // Убедитесь, что такой файл есть
         dialogBuilder.setView(dialogView)
+            .setTitle(" ")
+            .setPositiveButton("Закрыть") { dialog, _ -> dialog.dismiss() }
 
-        // Настраиваем кнопки диалога
-        dialogBuilder.setTitle(" ")
-        dialogBuilder.setPositiveButton("Закрыть") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        // Создаем и показываем диалог
         val alertDialog = dialogBuilder.create()
         alertDialog.show()
     }
-
-
 
     private fun openGameWindow() {
         val intent = Intent(this, GameActivity::class.java)

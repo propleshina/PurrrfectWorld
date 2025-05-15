@@ -1,253 +1,261 @@
 package com.example.purrrfectworld;
 
-import com.example.purrrfectworld.R;
-import android.content.DialogInterface;
-import android.graphics.Color;
+import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import androidx.appcompat.app.AlertDialog;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class GameActivity extends AppCompatActivity {
 
-    private FrameLayout rootLayout;
+    // Общие переменные для UI
+    private ImageView backgroundImageView; // для фона
+    private ImageView characterIcon; // для иконки персонажа
+    private TextView characterName; // для имени
+    private TextView dialogueText; // для текста диалога
 
-    // Элементы интерфейса
-    private View gameOverlay; // Основное окно игры
-    private TextView storyTextView; // Текст истории
-    private ImageView avatarImageView; // Аватар персонажа
-    private TextView nameTextView; // Имя персонажа
+    private TextView storyTextView; // для отображения диалогов (используется в другом стиле)
+    private Button autoPlayButton; // кнопка автопроигрыша
 
     private Handler handler = new Handler();
+
+    // Переменные состояния
+    private String[] dialogues; // массив строк с диалогами из файла
+    private int currentIndex = 0; // текущий индекс диалога
+    private String currentBackground = ""; // текущий фон
+
+    private boolean isAutoPlay = false; // флаг автопроигрыша
+    private boolean isWaitingForClick = false; // ждет ли пользователь клик
+
+    private String[] dialogLines; // строки из dialog.txt
+    private int currentLineIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game); // убедитесь, что layout содержит все нужные элементы
 
-        // Создаем корневой layout программно для гибкости
-        rootLayout = new FrameLayout(this);
-        setContentView(rootLayout);
+        // Инициализация UI элементов (для первой части)
+        backgroundImageView = findViewById(R.id.backgroundImage);
+        characterIcon = findViewById(R.id.avatarImageView);
+        characterName = findViewById(R.id.nameTextView);
+        dialogueText = findViewById(R.id.storyTextView);
 
-        initGameWindow();
-    }
+        // Инициализация UI элементов (для второй части)
+        storyTextView = findViewById(R.id.storyTextView);
+        autoPlayButton = findViewById(R.id.autoPlayButton);
 
-    private void initGameWindow() {
-        // Фон игры (можно заменить на изображение)
-        ImageView background = new ImageView(this);
-        background.setImageResource(R.drawable.background_main); // замените на свой ресурс
-        background.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        rootLayout.addView(background, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-
-        // Основное окно с текстом внизу (прямоугольник)
-        LinearLayout storyBox = new LinearLayout(this);
-        storyBox.setOrientation(LinearLayout.VERTICAL);
-        storyBox.setBackgroundColor(Color.parseColor("#AA000000")); // полупрозрачный черный фон
-        int margin = dpToPx(16);
-        FrameLayout.LayoutParams storyParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(150));
-        storyParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        storyParams.setMargins(margin, margin, margin, margin);
-        rootLayout.addView(storyBox, storyParams);
-
-        // Текст истории внутри storyBox
-        storyTextView = new TextView(this);
-        storyTextView.setTextColor(Color.WHITE);
-        storyTextView.setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
-        storyTextView.setTextSize(16f);
-        storyTextView.setText("Начальный текст истории...");
-        storyBox.addView(storyTextView);
-
-        // Имя персонажа сверху справа от окна (над текстом)
-        nameTextView = new TextView(this);
-        nameTextView.setText("Имя");
-        nameTextView.setTextColor(Color.WHITE);
-        nameTextView.setBackgroundColor(Color.parseColor("#88000000"));
-        nameTextView.setPadding(dpToPx(8), dpToPx(4), dpToPx(8), dpToPx(4));
-
-        FrameLayout.LayoutParams nameParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT);
-        nameParams.topMargin = dpToPx(20);
-        nameParams.leftMargin = dpToPx(20);
-        nameParams.gravity = Gravity.TOP | Gravity.START;
-
-        rootLayout.addView(nameTextView, nameParams);
-
-        // Аватар персонажа посередине снизу над текстом (можно заменить на изображение)
-        avatarImageView = new ImageView(this);
-        avatarImageView.setImageResource(R.drawable.avatar_happypunk); // замените на свой ресурс
-
-        int avatarSize = dpToPx(100);
-
-        FrameLayout.LayoutParams avatarParams = new FrameLayout.LayoutParams(
-                avatarSize,
-                avatarSize);
-
-        avatarParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-
-        // Смещение вверх чтобы не перекрывать текст окна (поднимаем чуть вверх)
-        avatarParams.bottomMargin = dpToPx(150);
-
-        rootLayout.addView(avatarImageView, avatarParams);
-
-        // Верхние кнопки (дом и карандаш)
-        LinearLayout topButtonsContainer = new LinearLayout(this);
-        topButtonsContainer.setOrientation(LinearLayout.HORIZONTAL);
-
-        ImageButton homeBtn = new ImageButton(this);
-        homeBtn.setImageResource(R.drawable.home); // добавьте свои ресурсы
-        homeBtn.setBackground(null);
-
-        ImageButton pencilBtn = new ImageButton(this);
-        pencilBtn.setImageResource(R.drawable.pencil);
-        pencilBtn.setBackground(null);
-
-        topButtonsContainer.addView(homeBtn, new LinearLayout.LayoutParams(dpToPx(48), dpToPx(48)));
-        topButtonsContainer.addView(pencilBtn, new LinearLayout.LayoutParams(dpToPx(48), dpToPx(48)));
-
-        FrameLayout.LayoutParams topBtnsParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.TOP | Gravity.START);
-        topBtnsParams.topMargin = dpToPx(16);
-        topBtnsParams.leftMargin = dpToPx(16);
-
-        rootLayout.addView(topButtonsContainer, topBtnsParams);
-
-        homeBtn.setOnClickListener(v -> finish()); // возвращает на главный экран
-
-        pencilBtn.setOnClickListener(v -> showSaveNameDialog());
-
-        // Кнопка автопроигрывания текста (справа сверху)
-        Button autoPlayBtn = new Button(this);
-        autoPlayBtn.setText("▶");
-
-        FrameLayout.LayoutParams autoPlayParam = new FrameLayout.LayoutParams(
-                dpToPx(48),
-                dpToPx(48),
-                Gravity.TOP | Gravity.END);
-        autoPlayParam.topMargin = dpToPx(16);
-        autoPlayParam.rightMargin = dpToPx(16);
-
-        rootLayout.addView(autoPlayBtn, autoPlayParam);
-
-        autoPlayBtn.setOnClickListener(v -> startAutoStory());
-
-        // Изначально запускаем рассказ или ждём по событию.
-        startStory();
-    }
-
-    private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
-    }
-
-    private void startAutoStory() {
-        // Например, автоматическая прокрутка текста истории
-        // Можно реализовать, например, запуск последовательности displayStory с автоматической задержкой
-        String[] storyLines = {"Это первая строка.", "Это вторая.", "Выбор?", "Конец."};
-        displayStoryAuto(storyLines, 0);
-    }
-
-    // Вспомогательный метод для автоматической прокрутки
-    private void displayStoryAuto(String[] lines, int index) {
-        if (index >= lines.length) {
-            return; // завершение
+        // Обработка кнопки возврата домой (если есть)
+        ImageButton homeButton = findViewById(R.id.homeButton);
+        if (homeButton != null) {
+            homeButton.setOnClickListener(v -> {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            });
         }
-        storyText(lines[index]);
-        handler.postDelayed(() -> displayStoryAuto(lines, index + 1), 2000); // задержка между строками
-    }
 
-    private void startStory() {
-        String[] storyLines = {"Это первая строка.", "Это вторая.", "Выбор?", "Конец."};
-        displayStory(storyLines, 0, new Runnable() {
-            public void run() {
-                showChoices(new String[]{"Выбор 1", "Выбор 2"}, choices -> {
-                    if (choices == 0) {
-                        storyText("Вы выбрали первый вариант");
-                    } else {
-                        storyText("Вы выбрали второй вариант");
-                    }
-                });
+        // Обработка кнопки сохранения (если есть)
+        ImageButton pencilButton = findViewById(R.id.pencilButton);
+        if (pencilButton != null) {
+            pencilButton.setOnClickListener(v -> showSaveDialog());
+        }
+
+        // Обработка автопроигрыша
+        autoPlayButton.setOnClickListener(v -> {
+            isAutoPlay = !isAutoPlay;
+            if (isAutoPlay) {
+                autoPlayButton.setText("⏸");
+                showNextLine(); // начать автоматический показ
+            } else {
+                autoPlayButton.setText("▶");
+                handler.removeCallbacksAndMessages(null); // остановить автомат
             }
         });
+
+        // Обработка клика по тексту диалога (для первой части)
+        dialogueText.setOnClickListener(v -> showNextDialogue());
+
+        // Обработка клика по тексту истории (для второй части)
+        storyTextView.setOnClickListener(v -> {
+            if (isWaitingForClick) {
+                showNextLine();
+            }
+        });
+
+        loadDialogFromFile(); // загрузить диалог из файла при запуске
     }
 
-    private void displayStory(String[] lines, int index, Runnable onComplete) {
-        if (index >= lines.length) {
-            if (onComplete != null) onComplete.run();
+    private void loadDialogFromFile() {
+        AssetManager assetManager = getAssets();
+        try (InputStream is = assetManager.open("dialog.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            String fullText = sb.toString().trim();
+
+            dialogLines = fullText.split("\\n");
+            currentLineIndex = 0;
+
+            showNextLine();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            storyTextView.setText("Ошибка загрузки диалога");
+        }
+    }
+
+    private void showNextLine() {
+        if (dialogLines == null || currentLineIndex >= dialogLines.length) {
+            storyTextView.setText("Конец диалога");
             return;
         }
 
-        storyText(lines[index]);
+        final String lineToShow = dialogLines[currentLineIndex];
+        currentLineIndex++;
 
-        handler.postDelayed(() -> displayStory(lines, index + 1, onComplete), 2000); // задержка между строками
+        parseAndDisplayLine(lineToShow);
+
+        if (isAutoPlay) {
+            handler.postDelayed(() -> showNextLine(), 1500);
+        }
     }
 
-    private void showSaveNameDialog() {
-        // Создаем диалог для ввода имени
-        final EditText input = new EditText(this);
-        input.setHint("Введите имя");
 
-        new AlertDialog.Builder(this)
-                .setTitle("Сохранить имя")
-                .setView(input)
-                .setPositiveButton("Сохранить", (dialog, which) -> {
-                    String name = input.getText().toString();
-                    // Обработка введенного имени
-                    saveName(name);
-                })
-                .setNegativeButton("Отмена", null)
-                .show();
-    }
-
-    // Метод для обработки сохранения имени (можете реализовать по своему)
-    private void saveName(String name) {
-        // Например, сохранить в SharedPreferences или вывести сообщение
-        Toast.makeText(this, "Имя сохранено: " + name, Toast.LENGTH_SHORT).show();
-    }
-
-    private void storyText(String text) {
+    public void showDialogText(String text, Runnable onComplete) {
         storyTextView.setText(text);
+
+        if (isAutoPlay) {
+            isWaitingForClick = false;
+            if (onComplete != null) onComplete.run();
+
+        } else {
+            isWaitingForClick = true;
+
+            storyTextView.setOnClickListener(v -> {
+                if (isWaitingForClick) {
+                    isWaitingForClick = false;
+                    if (onComplete != null) onComplete.run();
+                    showNextLine();
+                }
+            });
+        }
     }
 
-    // Определение интерфейса ChoiceCallback
-    public interface ChoiceCallback {
-        void onChoice(int choiceIndex);
-    }
-
-    private void showChoices(String[] options, ChoiceCallback callback) {
-        // Создаем контейнер для кнопок выбора
-        LinearLayout choicesLayout = new LinearLayout(this);
-        choicesLayout.setOrientation(LinearLayout.VERTICAL);
-        choicesLayout.setBackgroundColor(Color.parseColor("#CCFFFFFF")); // полупрозрачный фон
-        int padding = dpToPx(16);
-        choicesLayout.setPadding(padding, padding, padding, padding);
-
-        // Создаем диалоговое окно с выбором
-        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Выберите вариант");
-
-        // Создаем массив названий вариантов для отображения
-        builder.setItems(options, (dialog, which) -> {
-            // вызов коллбека с индексом выбранного варианта
-            callback.onChoice(which);
-            dialog.dismiss();
+    private void showSaveDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Введите название сохранения");
+        final EditText input = new EditText(this);
+        input.setHint("Название");
+        builder.setView(input);
+        builder.setPositiveButton("Сохранить", (dialog, which) -> {
+            String saveName = input.getText().toString().trim();
+            if (!saveName.isEmpty()) {
+                saveGame(saveName);
+            } else {
+                Toast.makeText(this, "Пожалуйста, введите название", Toast.LENGTH_SHORT).show();
+            }
         });
-
-        // Показываем диалог
+        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
         builder.show();
+    }
+
+    private void saveGame(String saveName) {
+        Intent intent = new Intent(this, SavesActivity.class);
+        intent.putExtra("SAVE_NAME", saveName);
+        startActivity(intent);
+    }
+
+    private void showNextDialogue() {
+        if (currentIndex >= dialogues.length) {
+            dialogueText.setText("Конец диалога");
+            return;
+        }
+    }
+
+    private void parseAndDisplayLine(String line) {
+        // Разделяем по запятым
+        String[] parts = line.split(";", -1); // -1 чтобы сохранить пустые части
+
+        if (parts.length < 4) {
+            // Если структура неправильная, пропускаем
+            return;
+        }
+
+// внутри parseAndDisplayLine()
+        String backgroundFile = parts[0].trim();
+        Log.d("GameActivity", "Обработка фона: " + backgroundFile);
+        if (!backgroundFile.equals("-") && !backgroundFile.isEmpty()) {
+            int resId = getResources().getIdentifier(
+                    backgroundFile.replace(".png", ""), "drawable", getPackageName());
+            if (resId != 0) {
+                backgroundImageView.setImageResource(resId);
+            } else {
+                Log.w("GameActivity", "Ресурс фона не найден: " + backgroundFile);
+            }
+        }
+        String dialoguePart = parts[1].trim();
+        String iconFile = parts[2].trim();
+        String characterNamePart = parts[3].trim();
+
+        // Обновляем фон
+        if (!backgroundFile.equals("-") && !backgroundFile.isEmpty()) {
+            int resId = getResources().getIdentifier(
+                    backgroundFile.replace(".png", ""), "drawable", getPackageName());
+            if (resId != 0) {
+                backgroundImageView.setImageResource(resId);
+            }
+        }
+
+        // Обновляем иконку персонажа
+        if (!iconFile.equals("-") && !iconFile.isEmpty()) {
+            int resIdIcon = getResources().getIdentifier(
+                    iconFile.replace(".png", ""), "drawable", getPackageName());
+            if (resIdIcon != 0) {
+                characterIcon.setImageResource(resIdIcon);
+            }
+        } else {
+            // Если нет картинки, можно скрыть или оставить как есть
+            characterIcon.setImageResource(0); // или сделать invisible
+        }
+
+        // Обновляем имя персонажа
+        String characterNameStr = "";
+        if (!characterNamePart.equals("-") && !characterNamePart.isEmpty()) {
+            // Удаляем скобки, если есть
+            characterNameStr = characterNamePart.replaceAll("[()]", "").trim();
+            characterName.setText(characterNameStr);
+            characterName.setVisibility(View.VISIBLE);
+        } else {
+            characterName.setVisibility(View.INVISIBLE);
+        }
+
+        // Обрабатываем диалог
+        String dialogueTextStr = "";
+        if (!dialoguePart.equals("-") && !dialoguePart.isEmpty()) {
+            // Удаляем скобки, если есть
+            dialogueTextStr = dialoguePart.replaceAll("[()]", "").trim();
+            showDialogText(dialogueTextStr, null);
+        } else {
+            showDialogText("", null);
+        }
     }
 }

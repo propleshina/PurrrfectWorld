@@ -2,19 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/menu">
 
     <!-- Заголовок -->
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Сохранения"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"/>
 
     <!-- Кнопка "НАЗАД" -->
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="201dp"
+        android:layout_height="wrap_content"
+        android:text=" Сохранения"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
     <Button
         android:id="@+id/button_back"
         android:layout_width="wrap_content"
@@ -34,7 +36,6 @@
         android:layout_margin="4dp"
         android:layout_marginTop="16dp">
 
-        <!-- 9 слотов -->
-        <!-- Можно динамически добавлять через код -->
+
     </GridLayout>
 </RelativeLayout>
