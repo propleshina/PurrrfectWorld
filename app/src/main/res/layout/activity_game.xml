@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Фон игры -->
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="0dp"
@@ -17,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Верхние кнопки (дом и карандаш) -->
     <LinearLayout
         android:id="@+id/topButtonsContainer"
         android:layout_width="wrap_content"
@@ -63,6 +61,17 @@
     <!-- Имя персонажа слева над диалоговым окном -->
 
 
+
+
+    <ImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
@@ -73,51 +82,33 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:text="Имя персонажа"
-
+        android:textStyle="bold"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/storyBoxContainer"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/avatarImageView"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-
-        app:layout_constraintBottom_toTopOf="@+id/storyBoxContainer"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-
     <LinearLayout
         android:id="@+id/storyBoxContainer"
-
         android:layout_width="0dp"
-
         android:layout_height="wrap_content"
-
         android:layout_marginBottom="56dp"
-
         android:background="#AA000000"
-
         android:minHeight="?attr/actionBarSize"
-
         android:paddingStart="8dp"
-
         android:paddingEnd="8dp"
-
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/storyTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:padding="16dp"
             android:textSize="20sp" />
     </LinearLayout>
 

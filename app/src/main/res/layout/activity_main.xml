@@ -15,8 +15,8 @@
     <!-- Кнопка Г (справа сверху) -->
     <ImageButton
         android:id="@+id/button_info"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -46,7 +46,7 @@
         <ImageButton
             android:id="@+id/button_saves"
             android:layout_width="400dp"
-            android:layout_height="130dp"
+            android:layout_height="170dp"
             android:contentDescription="TODO"
             android:src="@drawable/save"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -57,7 +57,7 @@
         <ImageButton
             android:id="@+id/button_settings"
             android:layout_width="400dp"
-            android:layout_height="130dp"
+            android:layout_height="170dp"
             android:contentDescription="TODO"
             android:src="@drawable/settings"
         android:background="?attr/selectableItemBackgroundBorderless"

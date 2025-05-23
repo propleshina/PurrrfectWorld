@@ -11,17 +11,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Сохранения"
-        android:textSize="30sp"
+        android:textSize="50sp"
         android:textStyle="bold" />
 
 
     <Button
         android:id="@+id/button_back"
+        android:text="НАЗАД"
+        android:textSize='25sp'
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="НАЗАД"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"/>
 
 
     <GridLayout
@@ -35,5 +36,14 @@
         android:layout_marginTop="16dp">
 
     </GridLayout>
+
+    <ImageView
+        android:id="@+id/image_nosound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/no_sound"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="16dp" />
 
 </RelativeLayout>

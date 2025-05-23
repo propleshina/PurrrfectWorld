@@ -13,8 +13,9 @@
         android:layout_marginTop="63dp"
         android:gravity="center"
         android:padding="16dp"
+        android:textStyle="bold"
         android:text="Настройки"
-        android:textSize="40sp" />
+        android:textSize="50sp" />
 
     <LinearLayout
         android:id="@+id/center_layout"
@@ -26,8 +27,9 @@
 
         <TextView
             android:text="Громкость звука"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:layout_width="match_parent"
+            android:textStyle="bold"
             android:layout_height="wrap_content"/>
         <SeekBar
             android:id="@+id/volume_seekbar"
@@ -40,7 +42,8 @@
 
         <TextView
             android:text='Скорость перемотки текста'
-            android:textSize='20sp'
+            android:textSize='25sp'
+            android:textStyle="bold"
             android:layout_width='match_parent'
             android:layout_height='wrap_content'/>
         <SeekBar
@@ -54,7 +57,8 @@
 
         <TextView
             android:text='Размер текста'
-            android:textSize='20sp'
+            android:textSize='25sp'
+            android:textStyle="bold"
             android:layout_width='match_parent'
             android:layout_height='wrap_content'/>
         <SeekBar
@@ -66,10 +70,20 @@
     <Button
         android:id="@+id/button_back"
         android:text="НАЗАД"
+        android:textSize='25sp'
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/image_sound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sound"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="35dp" />
 
 </RelativeLayout>

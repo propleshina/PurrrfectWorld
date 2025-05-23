@@ -5,20 +5,24 @@
     android:orientation="vertical"
     android:padding="8dp"
     android:layout_width="180dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="#80000000"
+    >
 
 <ImageView
 android:id="@+id/slot_image"
 android:layout_width="80dp"
 android:layout_height="80dp"
-android:src="@drawable/black" />
+android:src="@drawable/black"
+    android:scaleType="fitXY"/>
 
 <TextView
 android:id="@+id/title"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="Свободный слот"
-android:textSize="14sp"
+android:textSize="20sp"
+    android:textStyle="bold"
 android:layout_marginTop="8dp" />
 
 </LinearLayout>

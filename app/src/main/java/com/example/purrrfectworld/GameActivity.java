@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);// убедитесь, что layout содержит все нужные элементы
+        setContentView(R.layout.activity_game);
 
         // Инициализация UI элементов (для первой части)
         backgroundImageView = findViewById(R.id.backgroundImage);
@@ -69,7 +69,6 @@ public class GameActivity extends AppCompatActivity {
         loadDialogFromFile();
         loadProgress();
 
-        // Обработка кнопки возврата домой (если есть)
         ImageButton homeButton = findViewById(R.id.homeButton);
         if (homeButton != null) {
             homeButton.setOnClickListener(v -> {
@@ -78,7 +77,7 @@ public class GameActivity extends AppCompatActivity {
             });
         }
 
-        // Обработка кнопки сохранения (если есть)
+        // Обработка кнопки сохранения
         ImageButton pencilButton = findViewById(R.id.pencilButton);
         if (pencilButton != null) {
             pencilButton.setOnClickListener(v -> showSaveDialog());

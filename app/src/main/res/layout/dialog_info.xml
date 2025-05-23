@@ -24,11 +24,32 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="20dp"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/catImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/cat"
+                    android:layout_marginEnd="10dp"/>
+
+                <ImageView
+                    android:id="@+id/catImageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/cat"/>
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:textSize="19sp"
                 android:layout_height="wrap_content"
-                android:text="Добро пожаловать! Ниже вы найдете описание управления и функционала игры."
+                android:text="\nДобро пожаловать! Ниже вы найдете описание управления и функционала игры."
                 android:layout_marginBottom="20dp"/>
 
             <TextView
@@ -44,21 +65,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="ИГРАТЬ\nПри нажатии откроется окно с игрой. В этом окне вы увидите:\n- Фон и текст в прямоугольной форме внизу экрана.\n- В верхней правой части — имя персонажа, которое может озвучиваться.\n- Посередине — аватар персонажа.\n- В верхней левой части — две кнопки:\n    - Домик — возвращает на главный экран.\n    - Карандаш — позволяет написать название сохранения и сохранить текущий прогресс.\n- В центре экрана — кнопки с вариантами выбора, от которых зависит развитие сюжета.\n- В нижней правой части — кнопка в виде треугольника. Нажатие на нее запускает автопроигрывание текста до следующего выбора."
+                android:text="Кнопка ИГРАТЬ\nПри нажатии откроется окно с игрой. В этом окне вы увидите:\n- Фон и текст в прямоугольной форме внизу экрана.\n- В верхней правой части — имя персонажа, которое может озвучиваться.\n- Посередине — аватар персонажа.\n- В верхней левой части — две кнопки:\n    - Домик — возвращает на главный экран.\n    - Карандаш — позволяет написать название сохранения и сохранить текущий прогресс.\n- В центре экрана — кнопки с вариантами выбора, от которых зависит развитие сюжета.\n- В нижней правой части — кнопка в виде треугольника. Нажатие на нее запускает автопроигрывание текста до следующего выбора."
                 android:layout_marginBottom="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="СОХРАНЕНИЯ\nПри нажатии откроется окно с 9 слотами для сохранений:\n- Каждый слот — прозрачная прямоугольная форма.\n- После сохранения в слот появляется фон, название сохранения сверху, дата и время снизу.\n- Долгое нажатие на слот вызывает вопрос о удалении этого сохранения.\n- Короткое нажатие — загрузка выбранного сохранения и продолжение игры с этого момента.\n- В верхней правой части окна есть кнопка НАЗАД — возвращает к главному меню."
+                android:text="Кнопка СОХРАНЕНИЯ\nПри нажатии откроется окно с 9 слотами для сохранений:\n- Каждый слот — прозрачная прямоугольная форма.\n- После сохранения в слот появляется фон, название сохранения сверху, дата и время снизу.\n- Долгое нажатие на слот вызывает вопрос о удалении этого сохранения.\n- Короткое нажатие — загрузка выбранного сохранения и продолжение игры с этого момента.\n- В верхней правой части окна есть кнопка НАЗАД — возвращает к главному меню."
                 android:layout_marginBottom="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="НАСТРОЙКИ\nОткрывает окно настроек:\n- Регулятор громкости звука (бегунок).\n- Регулятор скорости перемотки текста (бегунок).\n- Регулятор размера текста (бегунок).\n- В верхней правой части — кнопка НАЗАД, возвращающая к главному меню."
+                android:text="Кнопка НАСТРОЙКИ\nОткрывает окно настроек:\n- Регулятор громкости звука (бегунок).\n- Регулятор скорости перемотки текста (бегунок).\n- Регулятор размера текста (бегунок).\n- В верхней правой части — кнопка НАЗАД, возвращающая к главному меню."
                 android:layout_marginBottom="8dp"/>
 
             <TextView
@@ -74,6 +95,14 @@
                 android:textSize="25sp"
                 android:text="Желаем приятной игры!"
                 android:textStyle="italic"/>
+
+            <ImageView
+                android:id="@+id/kamazImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/kamaz"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"/>
 
         </LinearLayout>
     </ScrollView>
