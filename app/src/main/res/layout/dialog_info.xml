@@ -17,11 +17,12 @@
 
             <TextView
                 android:id="@+id/instruction_title"
-                android:layout_width="wrap_content"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:text="Инструкция к игре"
                 android:textSize="35sp"
                 android:textStyle="bold"
+                android:scaleType="fitCenter"
                 android:layout_marginBottom="20dp"/>
 
             <LinearLayout
@@ -51,11 +52,101 @@
                 android:layout_height="wrap_content"
                 android:text="\nДобро пожаловать! Ниже вы найдете описание управления и функционала игры."
                 android:layout_marginBottom="20dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
+            <ImageView
+                android:id="@+id/playImageView"
+                android:layout_width="300dp"
+                android:layout_height="170dp"
+                android:src="@drawable/play"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Главное меню"
+                android:text="\t\t\tКнопка ИГРАТЬ"
+
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="Нажми, чтобы начать игру!"
+                android:layout_marginBottom="15dp"/>
+
+            <View
+                android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="15dp"/>
+
+            <ImageView
+                android:id="@+id/saveImageView"
+                android:layout_width="300dp"
+                android:layout_height="170dp"
+                android:src="@drawable/save"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\t\t\tКнопка СОХРАНЕНИЯ"
+
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="При нажатии откроется окно с вашими сохранениями. \nВыбирайте с умом, какие моменты игры вы желаете сохранить - количество слотов ограничено!"
+                android:layout_marginBottom="15dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
+            <ImageView
+                android:id="@+id/settingsImageView"
+                android:layout_width="300dp"
+                android:layout_height="170dp"
+                android:src="@drawable/settings"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\t\t\tКнопка НАСТРОЙКИ"
+
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="Здесь ты можешь изменить размер текста новеллы, громкость звука  и скорость прокрутки диалога!"
+                android:layout_marginBottom="8dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Процесс игры"
 
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -64,31 +155,107 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="19sp"
-                android:text="Кнопка ИГРАТЬ\nПри нажатии откроется окно с игрой. В этом окне вы увидите:\n- Фон и текст в прямоугольной форме внизу экрана.\n- В верхней правой части — имя персонажа, которое может озвучиваться.\n- Посередине — аватар персонажа.\n- В верхней левой части — две кнопки:\n    - Домик — возвращает на главный экран.\n    - Карандаш — позволяет написать название сохранения и сохранить текущий прогресс.\n- В центре экрана — кнопки с вариантами выбора, от которых зависит развитие сюжета.\n- В нижней правой части — кнопка в виде треугольника. Нажатие на нее запускает автопроигрывание текста до следующего выбора."
+                android:text="\t\t\tОСНОВЫ"
+
+                android:textSize="24sp"
+                android:textStyle="bold"
                 android:layout_marginBottom="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="Кнопка СОХРАНЕНИЯ\nПри нажатии откроется окно с 9 слотами для сохранений:\n- Каждый слот — прозрачная прямоугольная форма.\n- После сохранения в слот появляется фон, название сохранения сверху, дата и время снизу.\n- Долгое нажатие на слот вызывает вопрос о удалении этого сохранения.\n- Короткое нажатие — загрузка выбранного сохранения и продолжение игры с этого момента.\n- В верхней правой части окна есть кнопка НАЗАД — возвращает к главному меню."
+                android:text="Ты уже запустил игру? Давай разберемся, как играть!\n\nЧитай текст внизу экрана, вникай в сюжет. Когда перед тобой предстанет выбор - делай его с умом!"
+                android:layout_marginBottom="15dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
+            <ImageView
+                android:id="@+id/pencilImageView"
+                android:layout_width="300dp"
+                android:layout_height="170dp"
+                android:src="@drawable/pencil"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\t\t\tСОХРАНЕНИЕ ПРОГРЕССА"
+
+                android:textSize="24sp"
+                android:textStyle="bold"
                 android:layout_marginBottom="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="Кнопка НАСТРОЙКИ\nОткрывает окно настроек:\n- Регулятор громкости звука (бегунок).\n- Регулятор скорости перемотки текста (бегунок).\n- Регулятор размера текста (бегунок).\n- В верхней правой части — кнопка НАЗАД, возвращающая к главному меню."
-                android:layout_marginBottom="8dp"/>
+                android:text="Нажми на эту кнопку, чтобы сохранить свой прогресс. Введи название сохранения - не оставляй поле пустым!"
+                android:layout_marginBottom="15dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
+            <ImageView
+                android:id="@+id/forwardImageView"
+                android:layout_width="300dp"
+                android:layout_height="170dp"
+                android:src="@drawable/forward"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\t\t\tПЕРЕМОТКА ТЕКСТА"
+
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="Дополнительные детали\n- В окне с игрой есть элементы управления для сохранения, возврата и выбора вариантов развития сюжета.\n- Автоматическое проигрывание текста помогает быстро пройти диалоги или подготовить сюжетный момент.\n- Возможность сохраняться в разные слоты и удалять ненужные сохранения позволяет удобно управлять прогрессом."
+                android:text="Если ты проходишь игру уже не впервые и хочешь быстро пройти все диалоги до сюжетного выбора - можешь нажать на эту кнопку. \nНажми на нее во второй раз, и автоперемотка прекратится! \n\nСкорость прокрутки ты можешь отредактировать в настройках"
+                android:layout_marginBottom="15dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
+            <ImageView
+                android:id="@+id/homeImageView"
+                android:layout_width="300dp"
+                android:layout_height="170dp"
+                android:src="@drawable/home"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\t\t\tВЫХОД В ГЛАВНОЕ МЕНЮ "
+
+                android:textSize="24sp"
+                android:textStyle="bold"
                 android:layout_marginBottom="15dp"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="Нажми сюда, чтобы выйти в главное меню. \n\nНе забудь сохраниться, чтобы не потерять свой прогресс!"
+                android:layout_marginBottom="15dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="15dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,13 +263,12 @@
                 android:text="Желаем приятной игры!"
                 android:textStyle="italic"/>
 
-            <ImageView
-                android:id="@+id/kamazImageView"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/kamaz"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"/>
+                android:textSize="15sp"
+                android:text="\n\nЕсли у вас остались еще вопросы, вы можете задать их разработчику в telegram: @durashka228"
+                android:layout_marginBottom="15dp"/>
 
         </LinearLayout>
     </ScrollView>

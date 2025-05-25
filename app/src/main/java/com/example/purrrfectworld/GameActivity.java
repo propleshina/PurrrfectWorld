@@ -24,26 +24,24 @@ import java.io.InputStreamReader;
 
 public class GameActivity extends AppCompatActivity {
 
-    // Общие переменные для UI
-    private ImageView backgroundImageView; // для фона
-    private ImageView characterIcon; // для иконки персонажа
-    private TextView characterName; // для имени
-    private TextView dialogueText; // для текста диалога
+    private ImageView backgroundImageView;
+    private ImageView characterIcon;
+    private TextView characterName;
+    private TextView dialogueText;
 
-    private TextView storyTextView; // для отображения диалогов (используется в другом стиле)
-    private Button autoPlayButton; // кнопка автопроигрыша
+    private TextView storyTextView;
+    private Button autoPlayButton;
 
     private Handler handler = new Handler();
 
-    // Переменные состояния
-    private String[] dialogues; // массив строк с диалогами из файла
-    private int currentIndex = 0; // текущий индекс диалога
-    private String currentBackground = ""; // текущий фон
+    private String[] dialogues;
+    private int currentIndex = 0;
+    private String currentBackground = "";
 
-    private boolean isAutoPlay = false; // флаг автопроигрыша
-    private boolean isWaitingForClick = false; // ждет ли пользователь клик
+    private boolean isAutoPlay = false;
+    private boolean isWaitingForClick = false;
 
-    private String[] dialogLines; // строки из dialog.txt
+    private String[] dialogLines;
     private int currentLineIndex = 0;
 
     private static final String PREFS_NAME = "GameSavePrefs";
@@ -55,13 +53,13 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // Инициализация UI элементов (для первой части)
+
         backgroundImageView = findViewById(R.id.backgroundImage);
         characterIcon = findViewById(R.id.avatarImageView);
         characterName = findViewById(R.id.nameTextView);
         dialogueText = findViewById(R.id.storyTextView);
 
-        // Инициализация UI элементов (для второй части)
+
         storyTextView = findViewById(R.id.storyTextView);
         autoPlayButton = findViewById(R.id.autoPlayButton);
 
@@ -77,35 +75,34 @@ public class GameActivity extends AppCompatActivity {
             });
         }
 
-        // Обработка кнопки сохранения
+
         ImageButton pencilButton = findViewById(R.id.pencilButton);
         if (pencilButton != null) {
             pencilButton.setOnClickListener(v -> showSaveDialog());
         }
 
-        // Обработка автопроигрыша
+
         autoPlayButton.setOnClickListener(v -> {
             isAutoPlay = !isAutoPlay;
             if (isAutoPlay) {
                 autoPlayButton.setText("⏸");
-                showNextLine(); // начать автоматический показ
+                showNextLine();
             } else {
                 autoPlayButton.setText("▶");
-                handler.removeCallbacksAndMessages(null); // остановить автомат
+                handler.removeCallbacksAndMessages(null);
             }
         });
 
-        // Обработка клика по тексту диалога (для первой части)
+
         dialogueText.setOnClickListener(v -> showNextDialogue());
 
-        // Обработка клика по тексту истории (для второй части)
         storyTextView.setOnClickListener(v -> {
             if (isWaitingForClick) {
                 showNextLine();
             }
         });
 
-        loadDialogFromFile(); // загрузить диалог из файла при запуске
+        loadDialogFromFile();
     }
 
     private void loadDialogFromFile() {
@@ -206,7 +203,6 @@ public class GameActivity extends AppCompatActivity {
 
         String backgroundFile = parts[0].trim();
 
-        // Обновляем фон и сохраняем его имя
         if (!backgroundFile.equals("-") && !backgroundFile.isEmpty()) {
             int resId = getResources().getIdentifier(
                     backgroundFile.replace(".png", ""), "drawable", getPackageName());
@@ -222,7 +218,6 @@ public class GameActivity extends AppCompatActivity {
         String iconFile = parts[2].trim();
         String characterNamePart = parts[3].trim();
 
-        // Обновляем имя персонажа
         if (!characterNamePart.equals("-") && !characterNamePart.isEmpty()) {
             String characterNameStr = characterNamePart.replaceAll("[()]", "").trim();
             characterName.setText(characterNameStr);
@@ -231,7 +226,6 @@ public class GameActivity extends AppCompatActivity {
             characterName.setVisibility(View.INVISIBLE);
         }
 
-        // Обновляем иконку персонажа
         if (!iconFile.equals("-") && !iconFile.isEmpty()) {
             int resIdIcon = getResources().getIdentifier(
                     iconFile.replace(".png", ""), "drawable", getPackageName());
@@ -242,7 +236,6 @@ public class GameActivity extends AppCompatActivity {
             characterIcon.setImageResource(0);
         }
 
-        // Обрабатываем диалог
         String dialogueTextStr = "";
         if (!dialoguePart.equals("-") && !dialoguePart.isEmpty()) {
             dialogueTextStr = dialoguePart.replaceAll("[()]", "").trim();
@@ -269,7 +262,6 @@ public class GameActivity extends AppCompatActivity {
             currentLineIndex = prefs.getInt(KEY_CURRENT_INDEX, 0);
             currentBackground = prefs.getString(KEY_CURRENT_BACKGROUND, "");
 
-            // Восстановить фон
             if (!currentBackground.isEmpty()) {
                 int resId = getResources().getIdentifier(
                         currentBackground.replace(".png", ""), "drawable", getPackageName());
