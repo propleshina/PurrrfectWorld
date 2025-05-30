@@ -7,6 +7,7 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,8 +71,10 @@ public class GameActivity extends AppCompatActivity {
         autoPlayButton      = findViewById(R.id.autoPlayButton);
 
         // Загрузка сохранённой скорости (0..100)
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        int savedPercent = prefs.getInt(KEY_SCROLL_SPEED, 50);
+        SharedPreferences appPrefs = getSharedPreferences("AppSettings", Context.MODE_PRIVATE);
+        int savedPercent = appPrefs.getInt("Scroll_speed", 50);
+        int savedFontSize = appPrefs.getInt("font_size", 14);
+        storyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
         int intentSpeed = getIntent().getIntExtra("SCROLL_SPEED", savedPercent);
         updateCharDelay(intentSpeed);
 
@@ -117,7 +120,7 @@ public class GameActivity extends AppCompatActivity {
     /** Пересчитывает charDelayMs из процента скорости (0..100) */
     private void updateCharDelay(int speedPercent) {
         // 0→20ms, 100→220ms
-        charDelayMs = 20L + speedPercent * 2L;
+        charDelayMs = 220L - speedPercent * 2L;
     }
 
     private void loadDialogFromFile() {
