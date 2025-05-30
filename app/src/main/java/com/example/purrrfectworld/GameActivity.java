@@ -1,5 +1,6 @@
 package com.example.purrrfectworld;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -47,25 +48,29 @@ public class GameActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "GameSavePrefs";
     private static final String KEY_CURRENT_INDEX = "currentIndex";
     private static final String KEY_CURRENT_BACKGROUND = "currentBackground";
+    private static final String SCROLL_SPEED_KEY = "scroll_speed";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-
         backgroundImageView = findViewById(R.id.backgroundImage);
         characterIcon = findViewById(R.id.avatarImageView);
         characterName = findViewById(R.id.nameTextView);
         dialogueText = findViewById(R.id.storyTextView);
 
-
         storyTextView = findViewById(R.id.storyTextView);
         autoPlayButton = findViewById(R.id.autoPlayButton);
 
-
         loadDialogFromFile();
         loadProgress();
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        int scrollSpeed = prefs.getInt(SCROLL_SPEED_KEY, 50);
+
+        setupScrollSpeed(scrollSpeed);
 
         ImageButton homeButton = findViewById(R.id.homeButton);
         if (homeButton != null) {
@@ -75,12 +80,10 @@ public class GameActivity extends AppCompatActivity {
             });
         }
 
-
         ImageButton pencilButton = findViewById(R.id.pencilButton);
         if (pencilButton != null) {
             pencilButton.setOnClickListener(v -> showSaveDialog());
         }
-
 
         autoPlayButton.setOnClickListener(v -> {
             isAutoPlay = !isAutoPlay;
@@ -93,7 +96,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-
         dialogueText.setOnClickListener(v -> showNextDialogue());
 
         storyTextView.setOnClickListener(v -> {
@@ -103,6 +105,31 @@ public class GameActivity extends AppCompatActivity {
         });
 
         loadDialogFromFile();
+    }
+
+    private void setupScrollSpeed(int speed) {
+        final int delay = 100 - speed; // Преобразуем скорость в миллисекунды
+        if (delay < 10) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isAutoPlay) {
+                        showNextLine(); // Показываем следующий диалог
+                        handler.postDelayed(this, 10); // Устанавливаем минимальную задержку
+                    }
+                }
+            }, 10);
+        } else {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isAutoPlay) {
+                        showNextLine(); // Показываем следующий диалог
+                        handler.postDelayed(this, delay); // Устанавливаем следующую задержку
+                    }
+                }
+            }, delay);
+        }
     }
 
     private void loadDialogFromFile() {
@@ -143,7 +170,6 @@ public class GameActivity extends AppCompatActivity {
             handler.postDelayed(() -> showNextLine(), 1500);
         }
     }
-
 
     public void showDialogText(String text, Runnable onComplete) {
         storyTextView.setText(text);

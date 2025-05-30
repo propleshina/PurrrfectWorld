@@ -1,6 +1,7 @@
 package com.example.purrrfectworld
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
@@ -15,6 +16,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSettings: ImageButton
     private var mediaPlayer: MediaPlayer? = null
 
+    // Здесь вы можете добавить переменную для хранения скорости прокрутки
+    private var scrollSpeed: Int = 50 // Значение по умолчанию
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         btnPlay = findViewById(R.id.button_play)
         btnSaves = findViewById(R.id.button_saves)
         btnSettings = findViewById(R.id.button_settings)
+
+        // Загрузка настроек скорости прокрутки
+        loadScrollSpeed()
 
         // Инициализация и запуск MediaPlayer
         mediaPlayer = MediaPlayer.create(this, R.raw.defolt_music)
@@ -35,6 +42,11 @@ class MainActivity : AppCompatActivity() {
         btnPlay.setOnClickListener { openGameWindow() }
         btnSaves.setOnClickListener { openSavesWindow() }
         btnSettings.setOnClickListener { openSettingsWindow() }
+    }
+
+    private fun loadScrollSpeed() {
+        val prefs = getSharedPreferences("YOUR_PREFS_NAME", Context.MODE_PRIVATE) // Замените на ваше имя файла настроек
+        scrollSpeed = prefs.getInt("SCROLL_SPEED_KEY", 50) // Замените на ваш ключ
     }
 
     override fun onDestroy() {
@@ -61,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openGameWindow() {
         val intent = Intent(this, GameActivity::class.java)
+        intent.putExtra("SCROLL_SPEED", scrollSpeed) // Передаем скорость в GameActivity, если нужно
         startActivity(intent)
     }
 
@@ -72,5 +85,10 @@ class MainActivity : AppCompatActivity() {
     private fun openSettingsWindow() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun saveScrollSpeed(speed: Int) {
+        val prefs = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE)
+        prefs.edit().putInt("SCROLL_SPEED_KEY", speed).apply()
     }
 }

@@ -19,61 +19,62 @@ class SettingsActivity : AppCompatActivity() {
     private val SCROLL_SPEED_KEY = "scroll_speed"
     private val FONT_SIZE_KEY = "font_size"
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_settings)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_settings)
 
-            // Инициализация AudioManager
-            audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        // Инициализация AudioManager
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-            btnBack = findViewById(R.id.button_back)
-            btnBack.setOnClickListener { finish() }
+        btnBack = findViewById(R.id.button_back)
+        btnBack.setOnClickListener { finish() }
 
-            val volumeSeekBar = findViewById<SeekBar>(R.id.volume_seekbar)
-            val scrollSpeedSeekBar = findViewById<SeekBar>(R.id.scroll_speed_seekbar)
-            val fontSizeSeekBar = findViewById<SeekBar>(R.id.font_size_seekbar)
+        val volumeSeekBar = findViewById<SeekBar>(R.id.volume_seekbar)
+        val scrollSpeedSeekBar = findViewById<SeekBar>(R.id.scroll_speed_seekbar)
+        val fontSizeSeekBar = findViewById<SeekBar>(R.id.font_size_seekbar)
 
-            val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-            // Получаем текущее значение громкости системы
-            val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-            val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        // Получаем текущее значение громкости системы
+        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
 
-            // Устанавливаем значение SeekBar в диапазоне от 0 до 100
-            volumeSeekBar.progress = (currentVolume.toFloat() / maxVolume * 100).toInt()
+        // Устанавливаем значение SeekBar в диапазоне от 0 до 100
+        volumeSeekBar.progress = (currentVolume.toFloat() / maxVolume * 100).toInt()
 
-            scrollSpeedSeekBar.progress = prefs.getInt(SCROLL_SPEED_KEY, 50)
-            fontSizeSeekBar.progress = prefs.getInt(FONT_SIZE_KEY, 14)
+        // Установка значений из SharedPreferences
+        scrollSpeedSeekBar.progress = prefs.getInt(SCROLL_SPEED_KEY, 50) // Значение по умолчанию
+        fontSizeSeekBar.progress = prefs.getInt(FONT_SIZE_KEY, 14)
 
-            // Установка начальной громкости системы
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
+        // Установка начальной громкости системы
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
 
-            volumeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    savePreference(VOLUME_KEY, progress)
-                    // Установка громкости системы
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (progress / 100.0 * maxVolume).toInt(), 0)
-                }
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
+        volumeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                savePreference(VOLUME_KEY, progress)
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (progress / 100.0 * maxVolume).toInt(), 0)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
 
-            scrollSpeedSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    savePreference(SCROLL_SPEED_KEY, progress)
-                }
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
+        scrollSpeedSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                savePreference(SCROLL_SPEED_KEY, progress)
 
-            fontSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    savePreference(FONT_SIZE_KEY, progress)
-                }
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
-        }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        fontSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                savePreference(FONT_SIZE_KEY, progress)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+    }
 
 
     private fun savePreference(key: String, value: Int) {
