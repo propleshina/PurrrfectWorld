@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.purrrfectworld.GameActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnInfo: ImageButton
@@ -72,8 +73,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openGameWindow() {
-        val intent = Intent(this, GameActivity::class.java)
-        intent.putExtra("SCROLL_SPEED", scrollSpeed) // Передаем скорость в GameActivity, если нужно
+        val prefs = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE)
+        // Сбрасываем сохранённый индекс (необязательно, можно сделать в GameActivity)
+        prefs.edit().remove("currentIndex").remove("currentBackground").apply()
+
+        val intent = Intent(this, GameActivity::class.java).apply {
+            putExtra("SCROLL_SPEED", scrollSpeed)
+            putExtra("RESET_PROGRESS", true)      // <-- флаг сброса
+        }
         startActivity(intent)
     }
 
