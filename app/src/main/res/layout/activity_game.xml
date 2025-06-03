@@ -110,6 +110,17 @@
             android:gravity="center"
             android:padding="16dp"
             android:textSize="20sp" />
-    </LinearLayout>
 
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/choicesLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

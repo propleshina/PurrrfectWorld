@@ -36,13 +36,29 @@ class MainActivity : AppCompatActivity() {
         // Инициализация и запуск MediaPlayer
         mediaPlayer = MediaPlayer.create(this, R.raw.defolt_music)
         mediaPlayer?.isLooping = true // Включение зацикливания
+        mediaPlayer?.setVolume(0.3f, 0.3f)
         mediaPlayer?.start() // Запуск музыки
 
         // Установка слушателей на кнопки
-        btnInfo.setOnClickListener { showInfoDialog() }
-        btnPlay.setOnClickListener { openGameWindow() }
-        btnSaves.setOnClickListener { openSavesWindow() }
-        btnSettings.setOnClickListener { openSettingsWindow() }
+        btnInfo.setOnClickListener {
+            playClickSound()
+            showInfoDialog()
+        }
+
+        btnPlay.setOnClickListener {
+            playClickSound()
+            openGameWindow()
+        }
+
+        btnSaves.setOnClickListener {
+            playClickSound()
+            openSavesWindow()
+        }
+
+        btnSettings.setOnClickListener {
+            playClickSound()
+            openSettingsWindow()
+        }
     }
 
     private fun loadScrollSpeed() {
@@ -58,6 +74,15 @@ class MainActivity : AppCompatActivity() {
             it.release()
         }
         mediaPlayer = null
+    }
+
+    private fun playClickSound() {
+        val clickSound = MediaPlayer.create(this, R.raw.click)
+        clickSound.setVolume(1.0f, 1.0f)
+        clickSound.setOnCompletionListener {
+            it.release() // Освобождаем ресурсы после воспроизведения
+        }
+        clickSound.start()
     }
 
     private fun showInfoDialog() {

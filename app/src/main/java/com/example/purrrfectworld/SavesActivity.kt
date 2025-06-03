@@ -1,5 +1,6 @@
 package com.example.purrrfectworld
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -58,6 +59,7 @@ class SavesActivity : AppCompatActivity() {
         }
 
         btnBack.setOnClickListener {
+            playClickSound()
             finish()
         }
     }
@@ -120,6 +122,7 @@ class SavesActivity : AppCompatActivity() {
             }
         }
 
+
         fun updateSlot(hasData: Boolean, titleStr: String, dateStr: String) {
             val card = view.findViewById<LinearLayout>(R.id.save_card)
             val titleText = view.findViewById<TextView>(R.id.title)
@@ -132,6 +135,15 @@ class SavesActivity : AppCompatActivity() {
                 titleText.text = "Пусто"
             }
         }
+    }
+
+    private fun playClickSound() {
+        val clickSound = MediaPlayer.create(this, R.raw.click)
+        clickSound.setVolume(1.0f, 1.0f)
+        clickSound.setOnCompletionListener {
+            it.release() // Освобождаем ресурсы после воспроизведения
+        }
+        clickSound.start()
     }
 
     private fun saveAllSlots(slots: List<SaveSlotData?>) {

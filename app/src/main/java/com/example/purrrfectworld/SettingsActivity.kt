@@ -27,7 +27,9 @@ class SettingsActivity : AppCompatActivity() {
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         btnBack = findViewById(R.id.button_back)
-        btnBack.setOnClickListener { finish() }
+        btnBack.setOnClickListener {
+            playClickSound()
+            finish() }
 
         val volumeSeekBar = findViewById<SeekBar>(R.id.volume_seekbar)
         val scrollSpeedSeekBar = findViewById<SeekBar>(R.id.scroll_speed_seekbar)
@@ -76,6 +78,14 @@ class SettingsActivity : AppCompatActivity() {
         })
     }
 
+    private fun playClickSound() {
+        val clickSound = MediaPlayer.create(this, R.raw.click)
+        clickSound.setVolume(1.0f, 1.0f)
+        clickSound.setOnCompletionListener {
+            it.release() // Освобождаем ресурсы после воспроизведения
+        }
+        clickSound.start()
+    }
 
     private fun savePreference(key: String, value: Int) {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
