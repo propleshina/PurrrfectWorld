@@ -1,6 +1,5 @@
 package com.example.purrrfectworld
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
@@ -80,6 +79,7 @@ class SavesActivity : AppCompatActivity() {
 
             view.setOnClickListener {
                 playClickSound()
+
 
                 if (isSaveMode) {
                     if (saveName != null && branch != null) {

@@ -98,13 +98,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openGameWindow() {
+        // Останавливаем музыку главного меню
+        mediaPlayer?.let {
+            it.stop()
+            it.release()
+            mediaPlayer = null
+        }
+
         val prefs = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE)
-        // Сбрасываем сохранённый индекс (необязательно, можно сделать в GameActivity)
         prefs.edit().remove("currentIndex").remove("currentBackground").apply()
 
         val intent = Intent(this, GameActivity::class.java).apply {
             putExtra("SCROLL_SPEED", scrollSpeed)
-            putExtra("RESET_PROGRESS", true)      // <-- флаг сброса
+            putExtra("RESET_PROGRESS", true)
         }
         startActivity(intent)
     }
@@ -117,6 +123,16 @@ class MainActivity : AppCompatActivity() {
     private fun openSettingsWindow() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.defolt_music)
+            mediaPlayer?.isLooping = true
+            mediaPlayer?.setVolume(0.3f, 0.3f)
+            mediaPlayer?.start()
+        }
     }
 
     private fun saveScrollSpeed(speed: Int) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +55,8 @@ public class GameActivity extends AppCompatActivity {
     private TextView  storyTextView;
     private Button    autoPlayButton;
 
+    private MediaPlayer musicPlayer;
+    private String currentMusic = "";
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
@@ -298,8 +302,9 @@ public class GameActivity extends AppCompatActivity {
         choicesLayout.setVisibility(View.VISIBLE);
         choicesLayout.removeAllViews();
 
-        Button endBtn = new Button(this);
+        Button endBtn = new Button(new ContextThemeWrapper(this, R.style.ChoiceButtonStyle));
         endBtn.setText("Выйти в главное меню");
+        endBtn.setBackgroundColor(Color.parseColor("#80000000"));
         endBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -360,6 +365,7 @@ public class GameActivity extends AppCompatActivity {
             int resId = getResources()
                     .getIdentifier(bg.replace(".png",""), "drawable", getPackageName());
             if (resId != 0) backgroundImageView.setImageResource(resId);
+            playBackgroundMusic(bg);
         }
 
         // Текст диалога
@@ -379,8 +385,7 @@ public class GameActivity extends AppCompatActivity {
         // Имя
         String name = parts[3].trim().replaceAll("^\\(|\\)$", "");
         if (!name.equals("-") && !name.isEmpty()) {
-            characterName.setText(name);
-            characterName.setVisibility(View.VISIBLE);
+            updateNameStyle(name);
         } else {
             characterName.setVisibility(View.INVISIBLE);
         }
@@ -488,6 +493,50 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void updateNameStyle(String name) {
+        TextView nameTextView = findViewById(R.id.nameTextView);
+
+        if (name == null || name.isEmpty()) {
+            nameTextView.setVisibility(View.INVISIBLE);
+            return;
+        }
+
+        nameTextView.setVisibility(View.VISIBLE);
+
+        String emoji = "🐾"; // по умолчанию
+        int textColor = Color.WHITE; // по умолчанию
+
+        switch (name.toLowerCase(Locale.ROOT)) {
+            case "пуньк":
+                textColor = Color.parseColor("#FFB273"); // рыжий
+                emoji = "🐾";
+                break;
+
+            case "петра":
+                textColor = Color.parseColor("#60D5AC"); // зелёный
+                emoji = "🐾";
+                break;
+
+            case "молли":
+                textColor = Color.parseColor("#FB717E"); // красный
+                emoji = "🐾";
+                break;
+
+            case "бабушка":
+                textColor = Color.parseColor("#EB6AA3"); // розовый
+                emoji = "❤️";
+                break;
+
+            default:
+                textColor = Color.WHITE;
+                emoji = "";
+                break;
+        }
+
+        nameTextView.setTextColor(textColor);
+        nameTextView.setText(emoji + " " + name);
+    }
+
     private void loadProgress() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         currentLineIndex = prefs.getInt(KEY_CURRENT_INDEX, 0);
@@ -497,5 +546,45 @@ public class GameActivity extends AppCompatActivity {
             if (resId != 0) backgroundImageView.setImageResource(resId);
         }
         // НЕ вызываем здесь showNextLine()
+    }
+
+    private void playBackgroundMusic(String bgName) {
+        String musicKey;
+
+        if (bgName.contains("black")) {
+            musicKey = "naght";
+        } else if (bgName.contains("kitchen")|| bgName.contains("punkandgrandmother"))  {
+            musicKey = "kitchen";
+        } else if (bgName.contains("main_room") || bgName.contains("broakenvase")) {
+            musicKey = "mainroom";
+        } else if (bgName.contains("okno") || bgName.contains("friends")) {
+            musicKey = "okno";
+        } else {
+            musicKey = "default_music"; // по умолчанию
+        }
+
+        if (musicKey.equals(currentMusic)) return; // уже играет нужная
+
+        // Остановить текущую музыку
+        if (musicPlayer != null) {
+            musicPlayer.stop();
+            musicPlayer.release();
+        }
+
+        int resId = getResources().getIdentifier(musicKey, "raw", getPackageName());
+        if (resId != 0) {
+            musicPlayer = MediaPlayer.create(this, resId);
+            musicPlayer.setLooping(true);
+            musicPlayer.start();
+            currentMusic = musicKey;
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (musicPlayer != null) {
+            musicPlayer.release();
+            musicPlayer = null;
+        }
     }
 }

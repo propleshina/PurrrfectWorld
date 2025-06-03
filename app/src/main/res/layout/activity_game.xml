@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="4dp"
-        android:background="#88000000"
+        android:background="@drawable/name_background"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:text="Имя персонажа"
