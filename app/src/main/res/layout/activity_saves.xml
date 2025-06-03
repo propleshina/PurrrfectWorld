@@ -29,12 +29,14 @@
         android:id="@+id/slots_container"
         android:layout_below="@id/title"
         android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
         android:rowCount="3"
-        android:layout_marginTop="16dp">
-
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:alignmentMode="alignMargins"
+        android:rowOrderPreserved="false">
     </GridLayout>
 
     <ImageView

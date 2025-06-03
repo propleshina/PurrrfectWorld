@@ -136,6 +136,22 @@ public class GameActivity extends AppCompatActivity {
             showNextLine();
         }
 
+        Intent intent = getIntent();
+        String passedBranch = intent.getStringExtra("CURRENT_BRANCH");
+        int passedIndex = intent.getIntExtra("CURRENT_INDEX", -1);
+
+        if (!reset && passedBranch != null && passedIndex >= 0) {
+            currentBranch = passedBranch;
+            branchLineIndex = passedIndex;
+            showNextLine();
+        } else if (reset) {
+            currentBranch = "main";
+            branchLineIndex = 0;
+            showNextLine();
+        } else {
+            loadProgress();
+        }
+
         ImageButton homeBtn = findViewById(R.id.homeButton);
         if (homeBtn != null) {
             homeBtn.setOnClickListener(v -> {
@@ -338,6 +354,8 @@ public class GameActivity extends AppCompatActivity {
 
         // Фон
         String bg = parts[0].trim();
+        SharedPreferences prefs = getSharedPreferences("GameSavePrefs", MODE_PRIVATE);
+        prefs.edit().putString("currentBackground", bg).apply();
         if (!bg.equals("-") && !bg.isEmpty()) {
             int resId = getResources()
                     .getIdentifier(bg.replace(".png",""), "drawable", getPackageName());
@@ -381,10 +399,6 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Отображает строку по символам с задержкой charDelayMs.
-     * После окончания вызывает onComplete.
-     */
     private void showDialogText(final String text, final Runnable onComplete) {
         handler.removeCallbacksAndMessages(null);
         storyTextView.setText("");

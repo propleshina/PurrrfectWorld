@@ -2,13 +2,20 @@ package com.example.purrrfectworld
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+
 
 class SavesActivity : AppCompatActivity() {
 
@@ -41,8 +48,10 @@ class SavesActivity : AppCompatActivity() {
         for (i in 0 until SLOT_COUNT) {
             val slotView = LayoutInflater.from(this).inflate(R.layout.item_save_slot, null)
             val params = GridLayout.LayoutParams()
-            params.width = GridLayout.LayoutParams.WRAP_CONTENT
+            params.width = 0
             params.height = GridLayout.LayoutParams.WRAP_CONTENT
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            params.setMargins(8, 8, 8, 8)
             slotView.layoutParams = params
 
             val slot = SaveSlot(i, slotView)
@@ -78,27 +87,31 @@ class SavesActivity : AppCompatActivity() {
                         savedSlots[index] = SaveSlotData(saveName!!, date)
                         saveAllSlots(savedSlots)
 
-                        // Возвращаем данные обратно
-                        val resultIntent = Intent().apply {
-                            putExtra("CURRENT_BRANCH", branch)
-                            putExtra("CURRENT_INDEX", index)
-                        }
-                        setResult(Activity.RESULT_OK, resultIntent)
+                        val savePrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                        val gamePrefs = getSharedPreferences("GameSavePrefs", MODE_PRIVATE)
+                        val bgName = gamePrefs.getString("currentBackground", "black")?.replace(".png", "")
+
+                        savePrefs.edit()
+                            .putString("slot_branch_$index", branch)
+                            .putInt("slot_index_$index", this@SavesActivity.index)
+                            .putString("slot_bg_$index", bgName)
+                            .apply()
+
+                        Toast.makeText(this@SavesActivity, "Игра сохранена", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 } else {
-                    // Загрузка
                     val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                     val savedBranch = prefs.getString("slot_branch_$index", null)
                     val savedIndex = prefs.getInt("slot_index_$index", -1)
 
                     if (savedBranch != null && savedIndex >= 0) {
-                        val resultIntent = Intent().apply {
+                        val intent = Intent(this@SavesActivity, GameActivity::class.java).apply {
                             putExtra("CURRENT_BRANCH", savedBranch)
                             putExtra("CURRENT_INDEX", savedIndex)
+                            putExtra("RESET_PROGRESS", false)
                         }
-                        setResult(Activity.RESULT_OK, resultIntent)
-                        finish()
+                        startActivity(intent)
                     } else {
                         Toast.makeText(this@SavesActivity, "Слот пуст", Toast.LENGTH_SHORT).show()
                     }
@@ -109,7 +122,8 @@ class SavesActivity : AppCompatActivity() {
 
             view.setOnLongClickListener {
                 isLongPress = true
-                AlertDialog.Builder(view.context).setTitle("Удалить сохранение?")
+                AlertDialog.Builder(view.context)
+                    .setTitle("Удалить сохранение?")
                     .setMessage("Вы действительно хотите удалить это сохранение?")
                     .setPositiveButton("Удалить") { _, _ ->
                         savedSlots[index] = null
@@ -127,8 +141,19 @@ class SavesActivity : AppCompatActivity() {
             val card = view.findViewById<LinearLayout>(R.id.save_card)
             val titleText = view.findViewById<TextView>(R.id.title)
 
+            val imageView = view.findViewById<ImageView>(R.id.slot_image)
+            val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            val bgName = prefs.getString("slot_bg_$index", "black")
+            val resId = resources.getIdentifier(bgName, "drawable", packageName)
+
+            if (resId != 0) {
+                imageView.setImageResource(resId)
+            } else {
+                imageView.setImageResource(R.drawable.black)
+            }
+
             if (hasData) {
-                card.setBackgroundResource(R.drawable.save_slot_background)
+                card.setBackgroundColor(Color.parseColor("#80000000"))
                 titleText.text = "$titleStr\n$dateStr"
             } else {
                 card.setBackgroundResource(android.R.color.transparent)
