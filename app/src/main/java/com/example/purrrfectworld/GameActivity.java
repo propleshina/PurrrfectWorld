@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.ContextThemeWrapper;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,6 +53,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView  storyTextView;
     private Button    autoPlayButton;
 
+
     private Handler handler = new Handler(Looper.getMainLooper());
 
     private String[] dialogLines = new String[0];
@@ -57,6 +61,9 @@ public class GameActivity extends AppCompatActivity {
 
     private boolean isAutoPlay      = false;
     private boolean isWaitingForClick = false;
+    private boolean isTyping = false;
+    private String currentFullLine = "";
+    private String pendingSaveName = null;
 
     // Задержка между символами в мс
     private long charDelayMs = 50L;
@@ -65,6 +72,37 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        View rootLayout = findViewById(R.id.rootLayout);
+
+        rootLayout.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                View clickedView = getTouchedView(rootLayout, (int) event.getX(), (int) event.getY());
+
+                // Игнорируем кнопки
+                if (clickedView instanceof Button || clickedView instanceof ImageButton) {
+                    return false;
+                }
+
+                // 1. Если печатает — сразу показать весь текст
+                if (isTyping) {
+                    handler.removeCallbacksAndMessages(null);
+                    storyTextView.setText(currentFullLine);
+                    isTyping = false;
+                    isWaitingForClick = true;
+                    return true;
+                }
+
+                // 2. Если ждём — показать следующую строку
+                if (isWaitingForClick) {
+                    isWaitingForClick = false;
+                    handler.removeCallbacksAndMessages(null);
+                    showNextLine();
+                    return true;
+                }
+            }
+            return false;
+        });
 
         boolean reset = getIntent().getBooleanExtra("RESET_PROGRESS", false);
         if (reset) {
@@ -116,13 +154,23 @@ public class GameActivity extends AppCompatActivity {
 
         autoPlayButton.setOnClickListener(v -> {
             playClickSound();
+
+            if (isTyping) {
+                handler.removeCallbacksAndMessages(null);
+                storyTextView.setText(currentFullLine);
+                isTyping = false;
+                isWaitingForClick = true;
+                return;
+            }
+
             isAutoPlay = !isAutoPlay;
+            autoPlayButton.setText(isAutoPlay ? "⏸️" : "▶️");
+
             if (isAutoPlay) {
-                autoPlayButton.setText("⏸️");
                 showNextLine();
             } else {
-                autoPlayButton.setText("▶️");
                 handler.removeCallbacksAndMessages(null);
+                isWaitingForClick = true;
             }
         });
 
@@ -135,10 +183,9 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    /** Пересчитывает charDelayMs из процента скорости (0..100) */
     private void updateCharDelay(int speedPercent) {
-        // 0→20ms, 100→220ms
         charDelayMs = 220L - speedPercent * 2L;
+        if (charDelayMs < 20L) charDelayMs = 20L;
     }
 
     private void playClickSound() {
@@ -153,28 +200,40 @@ public class GameActivity extends AppCompatActivity {
     private void loadDialogFromFile() {
         AssetManager am = getAssets();
         dialogBranches.clear();
+
+        String currentBranch = "main";
         List<String> currentLines = new ArrayList<>();
-        String branch = "main";
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(am.open("dialog.txt")))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.trim().startsWith("<<")) {
-                    currentLines.add(line.trim());
-                } else if (line.trim().startsWith("<") && !line.trim().startsWith("<end>")) {
-                    dialogBranches.put(branch, currentLines);
-                    branch = line.trim().replaceAll("[<>]", "");
-                    currentLines = new ArrayList<>();
-                } else if (line.trim().startsWith("<end>")) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+
+                if (line.matches("^<<.*>>$")) {
+                    currentLines.add(line);
+                } else if (line.matches("^<[^<>]+>$") && !line.equalsIgnoreCase("<end>")) {
+                    // Новая ветка: обязательно сохраняем предыдущую
+                    if (!currentLines.isEmpty()) {
+                        dialogBranches.put(currentBranch, new ArrayList<>(currentLines));
+                    }
+                    currentBranch = line.replaceAll("[<>]", "").trim();
+                    currentLines.clear();
+                } else if (line.equalsIgnoreCase("<end>")) {
                     currentLines.add("<end>");
-                    dialogBranches.put(branch, currentLines);
+                    dialogBranches.put(currentBranch, new ArrayList<>(currentLines));
+                    currentLines.clear();
                 } else {
-                    currentLines.add(line.trim());
+                    currentLines.add(line);
                 }
             }
-            dialogBranches.put(branch, currentLines); // Последняя ветка
+
+            if (!dialogBranches.containsKey(currentBranch) && !currentLines.isEmpty()) {
+                dialogBranches.put(currentBranch, currentLines);
+            }
+
         } catch (IOException e) {
-            storyTextView.setText("Ошибка загрузки диалога");
+            storyTextView.setText("Ошибка чтения файла диалога");
         }
     }
 
@@ -196,6 +255,28 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private View getTouchedView(View parent, int x, int y) {
+        if (!(parent instanceof ViewGroup)) return parent;
+
+        ViewGroup group = (ViewGroup) parent;
+        for (int i = group.getChildCount() - 1; i >= 0; i--) {
+            View child = group.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) continue;
+
+            int[] location = new int[2];
+            child.getLocationOnScreen(location);
+            int childX = location[0];
+            int childY = location[1];
+
+            if (x >= childX && x <= (childX + child.getWidth())
+                    && y >= childY && y <= (childY + child.getHeight())) {
+                return getTouchedView(child, x, y);
+            }
+        }
+        return parent;
+    }
+
+
     private void showEndButton() {
         LinearLayout choicesLayout = findViewById(R.id.choicesLayout);
         choicesLayout.setVisibility(View.VISIBLE);
@@ -210,6 +291,7 @@ public class GameActivity extends AppCompatActivity {
         });
 
         choicesLayout.addView(endBtn);
+
     }
 
     private void showChoices(String line) {
@@ -225,17 +307,28 @@ public class GameActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile("<(.*?)>");
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
-            String choiceText = matcher.group(1);
-            Button choiceBtn = new Button(this);
+            String choiceText = matcher.group(1).trim().replaceAll("^<|>$", "");
+            ContextThemeWrapper themedContext = new ContextThemeWrapper(this, R.style.ChoiceButtonStyle);
+            Button choiceBtn = new Button(themedContext);
             choiceBtn.setText(choiceText);
             choiceBtn.setOnClickListener(v -> {
                 playClickSound();
-                currentBranch = choiceText;
-                branchLineIndex = 0;
-                choicesLayout.setVisibility(View.GONE);
-                showNextLine();
+                if (dialogBranches.containsKey(choiceText)) {
+                    currentBranch = choiceText;
+                    branchLineIndex = 0;
+                    choicesLayout.setVisibility(View.GONE);
+                    showNextLine();
+                } else {
+                    Toast.makeText(this, "Ветка \"" + choiceText + "\" не найдена", Toast.LENGTH_SHORT).show();
+                }
             });
             choicesLayout.addView(choiceBtn);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 16, 0, 16);
+            choiceBtn.setLayoutParams(params);
         }
     }
 
@@ -277,7 +370,10 @@ public class GameActivity extends AppCompatActivity {
         // Анимированное появление текста
         showDialogText(dialogue, new Runnable() {
             @Override
+
             public void run() {
+                isTyping=true;
+
                 if (isAutoPlay) {
                     showNextLine();
                 }
@@ -293,20 +389,21 @@ public class GameActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
         storyTextView.setText("");
         isWaitingForClick = false;
+        isTyping = true;
+        currentFullLine = text; // ← ТУТ правильно
 
         final char[] chars = text.toCharArray();
-        storyTextView.setText("");
         final Runnable[] typer = new Runnable[1];
         typer[0] = new Runnable() {
             int idx = 0;
+
             @Override
             public void run() {
                 if (idx < chars.length) {
                     storyTextView.append(String.valueOf(chars[idx++]));
-                    // всегда берём актуальную задержку
                     handler.postDelayed(this, charDelayMs);
                 } else {
-                    // Завершили
+                    isTyping = false; // Печать завершена
                     if (onComplete != null) onComplete.run();
                     if (!isAutoPlay) {
                         isWaitingForClick = true;
@@ -335,10 +432,23 @@ public class GameActivity extends AppCompatActivity {
                 .show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences appPrefs = getSharedPreferences("AppSettings", Context.MODE_PRIVATE);
+        int savedPercent = appPrefs.getInt("scroll_speed", 50);
+        updateCharDelay(savedPercent);
+    }
+
+
+
     private void saveGame(String saveName) {
         Intent intent = new Intent(this, SavesActivity.class);
+        intent.putExtra("SAVE_MODE", true); // флаг: это режим сохранения
         intent.putExtra("SAVE_NAME", saveName);
-        startActivity(intent);
+        intent.putExtra("CURRENT_BRANCH", currentBranch);
+        intent.putExtra("CURRENT_INDEX", branchLineIndex);
+        startActivityForResult(intent, 1001);
     }
 
     @Override
@@ -352,6 +462,16 @@ public class GameActivity extends AppCompatActivity {
         prefs.edit()
                 .putInt(KEY_CURRENT_INDEX, currentLineIndex)
                 .apply();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null) {
+            currentBranch = data.getStringExtra("CURRENT_BRANCH");
+            branchLineIndex = data.getIntExtra("CURRENT_INDEX", 0);
+            showNextLine();
+        }
     }
 
     private void loadProgress() {

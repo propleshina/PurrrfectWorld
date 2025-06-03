@@ -58,11 +58,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"/>
 
-    <!-- Имя персонажа слева над диалоговым окном -->
-
-
-
-
     <ImageView
         android:id="@+id/avatarImageView"
         android:layout_width="500dp"
@@ -117,10 +112,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
         android:gravity="center"
-        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
